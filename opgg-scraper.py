@@ -3,42 +3,7 @@ import json
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
-
-# Round Up Data
-# (win / play) * 100 = Win Rate
-def win_rate(win, play):
-    return (win / play) * 100
-
-# (kill + assist) / death = KDA Ratio
-def kda_ratio(kill, death, assist):
-    # if perfect KDA
-    if (death == 0).any().any():
-        return kill + assist
-    return (kill + assist) / death
-
-# kill|death|assist / play = K|D|A Averages
-def kda_averages(stat, play):
-    return stat / play
-
-# (minion_kill + neutral_minion_kill) / play = Average CS
-def average_cs(minions, jg_monsters, play):
-    return (minions + jg_monsters) / play
-
-# gold_earned / play = Average Gold
-def average_gold(gold, play):
-    return gold / play
-
-# (game_length_second / 60) / play = Average Game Length
-def average_game_length(game_length, play):
-    return (game_length / 60) / play
-
-# Average CS / Average Game Length = CS Per Minute
-def cs_per_minute(cs, game_length):
-    return cs / game_length
-
-# Average Gold / Average Game Length = Gold Per Minute
-def gold_per_minute(gold, game_length):
-    return gold / game_length
+from calc import *
 
 # Get Summoner Stats
 def get_summoner_stats(player_name):
@@ -51,6 +16,7 @@ def get_summoner_stats(player_name):
     # Get Data Keys
     data = soup.select_one('#__NEXT_DATA__').text
     data = json.loads(data)
+    # Look at Data Keys - Debugging
     #print(data['props']['pageProps']['data'].keys())
 
     # Get Champion Stats
@@ -72,7 +38,7 @@ def get_summoner_stats(player_name):
     cs_df_container.insert( len(cs_df_container.columns), 'gpm', gold_per_minute(cs_df_container['gold'], cs_df_container['game_length']) )
     cs_df_container.insert( len(cs_df_container.columns), 'winrate', win_rate(cs_df_container['win'], cs_df_container['play']) )
     #cs_df_container.insert(len(cs_df_container.columns), 'name', '' )
-    print(cs_df_container)
+    #print(cs_df_container)
 
     # Champion-Data Data Frame
     champion_data = data['props']['pageProps']['data']['champions']
@@ -80,17 +46,21 @@ def get_summoner_stats(player_name):
     cd_df_container = pd.DataFrame(champion_data)[['id', 'name']]
     #print(cd_df_container)
 
-    # Data Frame Merge
+    # Merge Data Frames
     merged_container = cs_df_container.merge(cd_df_container, on='id', how='left')
-    #print("Budwolf#NA1 Stats:")
     #print(merged_container[['name', 'play', 'win', 'lose', 'kill', 'death', 'assist', 'cs']])
     print(f"{player_name} Stats:")
     print(merged_container[['name', 'play', 'win', 'lose', 'winrate', 'kda', 'kill', 'death', 'assist', 'cs', 'csm', 'gold', 'gpm', 'game_length']])
 
 # Get Summoner Name
 def get_summoner_name():
-    summoner_name = input("Enter Summoner Name: ")
-    get_summoner_stats(summoner_name)
+    #summoner_name = input("Enter Summoner Name: ")
+    #get_summoner_stats(summoner_name)
+    names_input = input("Enter Summoner Name: ").split(",")
+    for summoner_name in names_input:
+        # Remove Leading/Trailing Whitespace and Replace # with -
+        summoner_name = summoner_name.lstrip().rstrip().replace("#", "-")
+        get_summoner_stats(summoner_name)
 
 # Main
 if __name__ == '__main__':
