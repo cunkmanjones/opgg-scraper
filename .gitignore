@@ -1,5 +1,8 @@
 # Old Test File
 /scraper-python.py
 
+# Assets
+assets/
+
 #Python Cache
 __pycache__/
