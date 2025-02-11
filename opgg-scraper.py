@@ -5,6 +5,10 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 # Round Up Data
+# (win / play) * 100 = Win Rate
+def win_rate(win, play):
+    return (win / play) * 100
+
 # (kill + assist) / death = KDA Ratio
 def kda_ratio(kill, death, assist):
     # if perfect KDA
@@ -66,6 +70,7 @@ def get_summoner_stats(player_name):
     cs_df_container.insert( len(cs_df_container.columns), 'game_length', average_game_length(cs_df['game_length_second'], cs_df['play']) )
     cs_df_container.insert( len(cs_df_container.columns), 'csm', cs_per_minute(cs_df_container['cs'], cs_df_container['game_length']) )
     cs_df_container.insert( len(cs_df_container.columns), 'gpm', gold_per_minute(cs_df_container['gold'], cs_df_container['game_length']) )
+    cs_df_container.insert( len(cs_df_container.columns), 'winrate', win_rate(cs_df_container['win'], cs_df_container['play']) )
     #cs_df_container.insert(len(cs_df_container.columns), 'name', '' )
     print(cs_df_container)
 
@@ -80,7 +85,7 @@ def get_summoner_stats(player_name):
     #print("Budwolf#NA1 Stats:")
     #print(merged_container[['name', 'play', 'win', 'lose', 'kill', 'death', 'assist', 'cs']])
     print(f"{player_name} Stats:")
-    print(merged_container[['name', 'play', 'win', 'lose', 'kda', 'kill', 'death', 'assist', 'cs', 'csm', 'gold', 'gpm', 'game_length']])
+    print(merged_container[['name', 'play', 'win', 'lose', 'winrate', 'kda', 'kill', 'death', 'assist', 'cs', 'csm', 'gold', 'gpm', 'game_length']])
 
 # Get Summoner Name
 def get_summoner_name():
