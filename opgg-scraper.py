@@ -52,6 +52,10 @@ def get_summoner_stats(player_name):
     print(f"{player_name} Stats:")
     print(merged_container[['name', 'play', 'win', 'lose', 'winrate', 'kda', 'kill', 'death', 'assist', 'cs', 'csm', 'gold', 'gpm', 'game_length']])
 
+    # Loop Program
+    # Ctrl + C to Exit
+    get_summoner_name()
+
 # Get Summoner Name
 def get_summoner_name():
     #summoner_name = input("Enter Summoner Name: ")

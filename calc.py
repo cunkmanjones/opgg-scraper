@@ -6,8 +6,8 @@ def win_rate(win, play):
 # (kill + assist) / death = KDA Ratio
 def kda_ratio(kill, death, assist):
     # if perfect KDA
-    if (death == 0).any().any():
-        return kill + assist
+    #if (death == 0).any().any():
+        #return kill + assist
     return (kill + assist) / death
 
 # kill|death|assist / play = K|D|A Averages
