@@ -14,8 +14,7 @@ pd.options.mode.copy_on_write = True
 
 # Get Summoner Stats
 def get_summoner_stats(player_name):
-    #player_name = 'Budwolf-NA1'
-    #url = 'https://www.op.gg/summoners/na/Budwolf-NA1/champions'
+    # If Summoner Exists then move forward, else return to get_summoner_name()
     try:
         url = f'https://www.op.gg/summoners/na/{player_name}/champions'
 
@@ -45,7 +44,26 @@ def get_summoner_stats(player_name):
     #print(champion_stats)
 
     #test = pd.DataFrame(data['props']['pageProps']['data']['league_stats'])
-    #print(test[['tier_info']])
+    #print(test['tier_info'])
+
+    # Get Ranked Stats
+    #league_stats = pd.DataFrame(data['props']['pageProps']['data']['league_stats'])
+    # tier, division, lp, level, tier_image_url, border_image_url
+    #ranked_stats = league_stats[['tier_info']]
+    ranked_stats = pd.DataFrame(data['props']['pageProps']['data']['league_stats'])[['tier_info']]
+
+    # .iloc[row, column]
+    solo_stats = ranked_stats.iloc[0, 0]
+    flex_stats = ranked_stats.iloc[1, 0]
+    solo_df = pd.DataFrame([solo_stats])
+    flex_df = pd.DataFrame([flex_stats])
+
+    print(f"{player_name} SoloQ Stats:")
+    print(solo_df[['tier', 'division', 'lp']])
+    #print(solo_df[['tier_image_url']])
+    print(f"{player_name} FlexQ Stats:")
+    print(flex_df[['tier', 'division', 'lp']])
+    #print(flex_df[['tier_image_url']])
 
     # Champion-Stats Data Frame
     cs_selected_columns = ['id', 'play', 'win', 'lose', 'kill', 'death', 'assist']
@@ -68,16 +86,6 @@ def get_summoner_stats(player_name):
         cs_df_container.insert( len(cs_df_container.columns), key, value())
     #print(cs_df_container)
     
-    '''cs_df_container = cs_df[cs_selected_columns]
-    cs_df_container.insert( len(cs_df_container.columns), 'cs', average_cs(cs_df['minion_kill'], cs_df['neutral_minion_kill'], cs_df['play']) )
-    cs_df_container.insert( len(cs_df_container.columns), 'kda', kda_ratio(cs_df['kill'], cs_df['death'], cs_df['assist']) )
-    cs_df_container.insert( len(cs_df_container.columns), 'gold', average_gold(cs_df['gold_earned'], cs_df['play']) )
-    cs_df_container.insert( len(cs_df_container.columns), 'game_length', average_game_length(cs_df['game_length_second'], cs_df['play']) )
-    cs_df_container.insert( len(cs_df_container.columns), 'csm', cs_per_minute(cs_df_container['cs'], cs_df_container['game_length']) )
-    cs_df_container.insert( len(cs_df_container.columns), 'gpm', gold_per_minute(cs_df_container['gold'], cs_df_container['game_length']) )
-    cs_df_container.insert( len(cs_df_container.columns), 'winrate', win_rate(cs_df_container['win'], cs_df_container['play']) )
-    print(cs_df_container)'''
-    
     # Champion-Data Data Frame
     champion_data = data['props']['pageProps']['data']['champions']
     #cd_selected_columns = ['id', 'name']
@@ -93,9 +101,7 @@ def get_summoner_stats(player_name):
     #print(merged_container[['image_url']])
     #print(type(merged_container.at[0, 'death']))
     
-    # Loop Program
-    # Ctrl + C to Exit
-    get_summoner_name()
+    #get_summoner_name()
 
 # Get Summoner Name
 def get_summoner_name():
@@ -106,6 +112,9 @@ def get_summoner_name():
         # Remove Leading/Trailing Whitespace and Replace # with -
         summoner_name = summoner_name.lstrip().rstrip().replace("#", "-")
         get_summoner_stats(summoner_name)
+    # Loop Program
+    # Ctrl + C to Exit
+    get_summoner_name()
 
 # Main
 if __name__ == '__main__':
