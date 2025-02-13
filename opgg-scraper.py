@@ -1,27 +1,51 @@
-import math
+#import math
+#import sys
 import json
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from calc import *
 
+# Increase Column Size for Debugging in Terminal
+#print(pd.get_option("display.max_colwidth"))
+pd.set_option("display.max_colwidth", None)
+# https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+pd.options.mode.copy_on_write = True
+
 # Get Summoner Stats
 def get_summoner_stats(player_name):
     #player_name = 'Budwolf-NA1'
     #url = 'https://www.op.gg/summoners/na/Budwolf-NA1/champions'
-    url = f'https://www.op.gg/summoners/na/{player_name}/champions'
-    headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0'}
-    soup = BeautifulSoup(requests.get(url, headers=headers).content, 'html.parser')
+    try:
+        url = f'https://www.op.gg/summoners/na/{player_name}/champions'
 
-    # Get Data Keys
-    data = soup.select_one('#__NEXT_DATA__').text
-    data = json.loads(data)
+        headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0'}
+        soup = BeautifulSoup(requests.get(url, headers=headers).content, 'html.parser')
+
+        # Get Data Keys
+        data = soup.select_one('#__NEXT_DATA__').text
+        data = json.loads(data)
+
+        # Check if Summoner ID is Valid
+        data['props']['pageProps']['data']['summoner_id']
+    except:
+        print(f"Error: {player_name} is not a valid summoner name.")
+        return get_summoner_name()
+
     # Look at Data Keys - Debugging
     #print(data['props']['pageProps']['data'].keys())
 
     # Get Champion Stats
-    champion_stats = data['props']['pageProps']['data']['most_champions']['champion_stats']
+    #champion_stats = data['props']['pageProps']['data']['most_champions']['champion_stats']
+    try:
+        champion_stats = data['props']['pageProps']['data']['most_champions']['champion_stats']
+    except:
+        print(f"Error: {player_name} has no ranked data.")
+        return get_summoner_name()
     #print(champion_stats)
+
+    #test = pd.DataFrame(data['props']['pageProps']['data']['league_stats'])
+    #print(test[['tier_info']])
 
     # Champion-Stats Data Frame
     cs_selected_columns = ['id', 'play', 'win', 'lose', 'kill', 'death', 'assist']
@@ -29,7 +53,22 @@ def get_summoner_stats(player_name):
     #print(cs_df[selected_columns])
 
     cs_df_container = cs_df[cs_selected_columns]
-    #cs_df_container.insert(len(cs_df_container.columns), 'cs', (cs_df['minion_kill'] + cs_df['neutral_minion_kill']) / cs_df['play'] )
+    # Reminder: Keys that use Newly Created Columns must use their Parent Container
+    # Example: cs_df_container['cs'] instead of cs_df['cs']
+    cs_df_dictionary = {
+        "cs": lambda: average_cs(cs_df['minion_kill'], cs_df['neutral_minion_kill'], cs_df['play']),
+        "kda": lambda: kda_ratio(cs_df['kill'], cs_df['death'], cs_df['assist']),
+        "gold": lambda: average_gold(cs_df['gold_earned'], cs_df['play']),
+        "game_length": lambda: average_game_length(cs_df['game_length_second'], cs_df['play']),
+        "csm": lambda: cs_per_minute(cs_df_container['cs'], cs_df_container['game_length']),
+        "gpm": lambda: gold_per_minute(cs_df_container['gold'], cs_df_container['game_length']),
+        "winrate": lambda: win_rate(cs_df['win'], cs_df['play'])
+    }
+    for key, value in cs_df_dictionary.items():
+        cs_df_container.insert( len(cs_df_container.columns), key, value())
+    #print(cs_df_container)
+    
+    '''cs_df_container = cs_df[cs_selected_columns]
     cs_df_container.insert( len(cs_df_container.columns), 'cs', average_cs(cs_df['minion_kill'], cs_df['neutral_minion_kill'], cs_df['play']) )
     cs_df_container.insert( len(cs_df_container.columns), 'kda', kda_ratio(cs_df['kill'], cs_df['death'], cs_df['assist']) )
     cs_df_container.insert( len(cs_df_container.columns), 'gold', average_gold(cs_df['gold_earned'], cs_df['play']) )
@@ -37,13 +76,12 @@ def get_summoner_stats(player_name):
     cs_df_container.insert( len(cs_df_container.columns), 'csm', cs_per_minute(cs_df_container['cs'], cs_df_container['game_length']) )
     cs_df_container.insert( len(cs_df_container.columns), 'gpm', gold_per_minute(cs_df_container['gold'], cs_df_container['game_length']) )
     cs_df_container.insert( len(cs_df_container.columns), 'winrate', win_rate(cs_df_container['win'], cs_df_container['play']) )
-    #cs_df_container.insert(len(cs_df_container.columns), 'name', '' )
-    #print(cs_df_container)
-
+    print(cs_df_container)'''
+    
     # Champion-Data Data Frame
     champion_data = data['props']['pageProps']['data']['champions']
     #cd_selected_columns = ['id', 'name']
-    cd_df_container = pd.DataFrame(champion_data)[['id', 'name']]
+    cd_df_container = pd.DataFrame(champion_data)[['id', 'name', 'image_url']]
     #print(cd_df_container)
 
     # Merge Data Frames
@@ -51,7 +89,10 @@ def get_summoner_stats(player_name):
     #print(merged_container[['name', 'play', 'win', 'lose', 'kill', 'death', 'assist', 'cs']])
     print(f"{player_name} Stats:")
     print(merged_container[['name', 'play', 'win', 'lose', 'winrate', 'kda', 'kill', 'death', 'assist', 'cs', 'csm', 'gold', 'gpm', 'game_length']])
-
+    
+    #print(merged_container[['image_url']])
+    #print(type(merged_container.at[0, 'death']))
+    
     # Loop Program
     # Ctrl + C to Exit
     get_summoner_name()
