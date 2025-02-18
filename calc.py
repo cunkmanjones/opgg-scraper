@@ -1,4 +1,12 @@
-# Round Up Data
+# Turn List of Dictionaries into Single Dictionary
+def dict_from_list(list):
+    new_list = {}
+    for dictionary in list:
+        for key, value in dictionary.items():
+            new_list.setdefault(key, []).append(value)
+    return new_list
+
+### Round Up Data
 # (win / play) * 100 = Win Rate
 def win_rate(win, play):
     return (win / play) * 100
