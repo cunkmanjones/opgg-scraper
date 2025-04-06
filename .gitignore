@@ -1,8 +1,15 @@
-# Old Test File
-/scraper-python.py
-
 # Assets
 assets/
 
-#Python Cache
+# Python Cache
 __pycache__/
+opgg-scraper/__pycache__/
+
+# VSCode Settings
+.vscode/
+
+# PyInstaller Files
+opgg-scraper/dist/
+opgg-scraper/build/
+opgg-scraper/pyside6_gui.spec
+opgg-scraper/favicon.ico
