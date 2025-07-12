@@ -1,3 +1,8 @@
+> [!CAUTION]
+> July 12th, 2025: Scraper no longer functions properly due to API obfuscation by OP.GG.
+> Unless a new entry point is found, the current version of the application (1.0) will throw an HTTPS Connection error pointing towards 'lol-web-api.op.gg'.
+> It's still possible for anyone to scrape data from OP.GG, however, it would be without the use of their API, which for this app would require a full rebuild of the core functionality.
+
 <h3 align="center">
   <img src="https://github.com/cunkmanjones/opgg-scraper/blob/main/.github/opgg-scraper-logo-bluecircle.png">
 </h3>
@@ -9,16 +14,16 @@
 
 # Installation
 ## Windows
-### Releases Tab
+### Method 1: Releases Tab
 Download the [Current Release](https://github.com/cunkmanjones/opgg-scraper/releases) from the Releases Tab.
-### Local Build
+### Method 2: Local Build
 Download [Python Version 3.11.0](https://www.python.org/downloads/release/python-3110/) and the [Project Source](https://github.com/cunkmanjones/opgg-scraper/archive/refs/heads/main.zip) as a ZIP (or your preferred method of downloading the source code).<br/>
-#### Requirements Dependencies:
+#### Dependencies:
 Once the source is downloaded/extracted, open the folder containing `requirements.txt` using File Explorer, type `cmd` into the address bar, and paste the following command:<br/>
 ```
 pip install -r requirements.txt
 ```
-#### Manual Requirements Dependencies:
+If you'd prefer to download the dependencies yourself:
 - [fakeuseragent](https://pypi.org/project/fake-useragent/)
 - [lupa](https://pypi.org/project/lupa/)
 - [pandas](https://pypi.org/project/pandas/)
@@ -38,7 +43,7 @@ pip install -r requirements.txt
 
 # Why
 *This project isn't to be taken seriously; I just made it for fun.*<br/>
-I wanted to make a small application in Python with a nice-looking GUI. I also wanted to create a Github Repository and see how difficult it would be to maintain it. The coding isn't clean or well documented, there's a massive gap in between commits due to overhauling the entire backend, and I learned more and more as the project went on, so a lot of the formatting evolved over time. The project itself isn't technically a scraper anymore, but I'm committed to the name. 
+I wanted to make a small application in Python with a nice-looking GUI. I also wanted to create a GitHub repository and see how difficult it would be to maintain it. The coding isn't clean or well documented, there's a massive gap in between commits due to overhauling the entire backend, and I learned more and more as the project went on, so a lot of the formatting evolved over time. The project itself isn't technically a scraper anymore, but I'm committed to the name. 
 
 # License
 - [**LGPLv3.0 License**](https://github.com/cunkmanjones/opgg-scraper/blob/main/LICENSE)
