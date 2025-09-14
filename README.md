@@ -1,7 +1,7 @@
 > [!CAUTION]
-> July 12th, 2025: Scraper no longer functions properly due to API obfuscation by OP.GG.
-> Unless a new entry point is found, the current version of the application (1.0) will throw an HTTPS Connection error pointing towards 'lol-web-api.op.gg'.
-> It's still possible for anyone to scrape data from OP.GG, however, it would be without the use of their API, which for this app would require a full rebuild of the core functionality.
+> July 12th, 2025: Scraper no longer functions properly.
+> The endpoint the program used no longer returns player data. 
+> I'm archiving this repository until a new endpoint with a similar data structure is discovered.
 
 <h3 align="center">
   <img src="https://github.com/cunkmanjones/opgg-scraper/blob/main/.github/opgg-scraper-logo-bluecircle.png">
