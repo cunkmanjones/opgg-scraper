@@ -1,5 +1,6 @@
-# API Urls
-API_BYPASS_URL = 'https://lol-web-api.op.gg/api/v1.0/internal/bypass'
+# API URLs
+API_SUMMONER_URL = 'https://lol-api-summoner.op.gg/api'
+API_CHAMPION_URL = 'https://lol-api-champion.op.gg/api'
 API_LOL_URL = 'https://ddragon.leagueoflegends.com'
 
 # Regions
@@ -21,17 +22,17 @@ REGIONS = [
     'RU'
 ]
 
-# Gametypes for Player Stats
-GAMETYPES = [
-    'RANKED', 
-    'SOLORANKED', 
-    'FLEXRANKED'
+# Gametypes - Player
+GAMETYPES_PLAYER = [
+    'ranked', 
+    'soloranked', 
+    'flexranked'
 ]
 
-# Gametypes for Champion Stats
+# Gametypes - Champions
 GAMETYPES_CHAMPION = [
-    'RANKED',
-    'FLEX'
+    'ranked',
+    'flex'
 ]
 
 # Ranks

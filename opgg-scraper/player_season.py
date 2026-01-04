@@ -1,10 +1,12 @@
 import pandas as pd
 
+from api_calls import api_call
+from constants import API_SUMMONER_URL
+
 
 # Return Dataframe of Seasons
-def get_seasons_list(data) -> pd.DataFrame:
-    seasonIds = data['data']['seasons']
-    seasonData = pd.DataFrame(seasonIds)[['id', 'value', 'display_value', 'split', 'season', 'is_preseason']]
+def get_seasons_list() -> pd.DataFrame:
+    seasons = api_call(f'{API_SUMMONER_URL}/meta/seasons')
+    seasonData = pd.DataFrame(seasons['data'])
     
-    # Return Reversed Dataframe Order
     return seasonData[~seasonData.is_preseason].loc[:: -1]

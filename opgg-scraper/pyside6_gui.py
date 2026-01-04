@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QGuiApplication, QIcon
 import qdarktheme
 
-from constants import GAMETYPES, GAMETYPES_CHAMPION, RANKS, REGIONS 
+from constants import GAMETYPES_PLAYER, GAMETYPES_CHAMPION, RANKS, REGIONS 
 from generic_champion import get_champion_stats, get_league_api, get_opgg_patches
 from player_champion import get_summoner_stats
 from player_season import get_seasons_list
@@ -23,6 +23,10 @@ from pyside6_champion import setup_stats_columns
 
 # Suppress Deprecation Warning 
 warnings.filterwarnings("ignore", category=DeprecationWarning, message="sipPyTypeDict.*")
+
+# Fetch LoL Champion Names/IDs
+lolChampions = get_league_api()
+lolChampionsDataFrame = pd.DataFrame(list(lolChampions.items()), columns=['name', 'id'])
 
 # Main Application Class
 class MainApp(QWidget):
@@ -98,7 +102,7 @@ class MainApp(QWidget):
         container = QWidget(self.tab3)
         layoutHorizontal = QHBoxLayout(container)
 
-        championDict = get_league_api()
+        championDict = lolChampions # championDict = get_league_api()
         championNamesList = list(championDict.keys())
         completer = QCompleter(championNamesList)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
@@ -191,7 +195,7 @@ class MainApp(QWidget):
 
         # Text Input Bar
         widgets['text_input'] = QLineEdit(parent)
-        widgets['text_input'].setPlaceholderText("Enter Summoner Name#Tagline")
+        widgets['text_input'].setPlaceholderText("Enter SummonerName#Tagline")
         layoutHorizontal.addWidget(widgets['text_input'])
 
         # Search Button
@@ -225,7 +229,7 @@ class MainApp(QWidget):
         
         # GameType Dropdown
         widgets['dropdown_gametype'] = QComboBox(parent)
-        widgets['dropdown_gametype'].addItems(GAMETYPES)
+        widgets['dropdown_gametype'].addItems(GAMETYPES_PLAYER)
         widgets['dropdown_gametype'].setEnabled(False)
         widgets['dropdown_gametype'].hide()
         layoutHorizontalDropdowns.addWidget(widgets['dropdown_gametype'])
@@ -352,7 +356,9 @@ class MainApp(QWidget):
 
         if widgets['dropdown_seasons'].count() == 0:
             widgets['dropdown_seasons'].blockSignals(True)
-            seasonsList = get_seasons_list(validData)
+
+            seasonsList = get_seasons_list() # seasonsList = get_seasons_list(validData)
+            
             for index, row in seasonsList.iterrows():
                 displayText = f"Season: {str(row['display_value'])}"
                 if str(row['split']) != "nan":
@@ -391,7 +397,7 @@ class MainApp(QWidget):
     # Fetch Summoner Stats
     def summoner_stats_dataframe(self, name, season, gametype, data, widgets):
         try:
-            summonerDataFrame = get_summoner_stats(widgets['dropdown_region'].currentText(), season, gametype, data)
+            summonerDataFrame = get_summoner_stats(widgets['dropdown_region'].currentText(), season, gametype, data, lolChampionsDataFrame)
 
             # If Headers don't Exist, Update Table
             if 'vertical_headers' and 'horizontal_headers' not in widgets:
@@ -424,7 +430,8 @@ class MainApp(QWidget):
             if 'export_button' in widgets:
                 widgets['export_button'].setEnabled(True)     
         except Exception as e:
-            #print(f"Error fetching data: {e}")
+            print(f"Error fetching data: {e}")
+
             if 'export_button' in widgets:
                 widgets['export_button'].setEnabled(False)
             return

@@ -1,6 +1,7 @@
 import os
 
 from lupa import LuaRuntime
+import pandas as pd
 
 
 # Call Lua math functions
@@ -51,4 +52,5 @@ def merge_function_columns(funcDict, data, champData):
         result = value()
         data.insert(len(data.columns), key, _lua_table_to_list(result))
     # Align Champion Names ('name') with IDs ('id')
-    return data.merge(champData, on='id', how='left')
+    alignedNames = pd.merge(data, champData, on = 'id', how = 'left')
+    return alignedNames
