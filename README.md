@@ -1,8 +1,3 @@
-> [!CAUTION]
-> July 12th, 2025: Scraper no longer functions properly.
-> The endpoint the program used no longer returns player data. 
-> I'm archiving this repository until a new endpoint with a similar data structure is discovered.
-
 <h3 align="center">
   <img src="https://github.com/cunkmanjones/opgg-scraper/blob/main/.github/opgg-scraper-logo-bluecircle.png">
 </h3>
