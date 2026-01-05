@@ -5,6 +5,9 @@ assets/
 __pycache__/
 opgg-scraper/__pycache__/
 
+# Virtual Environment
+.venv/
+
 # VSCode Settings
 .vscode/
 
